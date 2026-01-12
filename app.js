@@ -25,6 +25,30 @@ document.body.addEventListener('input', (e) => {
     calculate();
 });
 
+const resetBtn = document.getElementById('resetBtn');
+
+resetBtn.addEventListener('click', () => {
+    if (confirm('Clear all settings and inputs?')) {
+        // Clear LocalStorage
+        localStorage.clear();
+        
+        // Clear Inputs
+        elements.currentBg.value = '';
+        elements.carbs.value = '';
+        
+        // Reset Settings to Defaults
+        elements.targetBg.value = 5.5;
+        elements.isf.value = 2.0;
+        elements.carbRatio.value = 10;
+        
+        // Refresh Calculations
+        calculate();
+        
+        // Return focus to top
+        elements.currentBg.focus();
+    }
+});
+
 function calculate() {
     const bg = parseFloat(elements.currentBg.value) || 0;
     const carbs = parseFloat(elements.carbs.value) || 0;
