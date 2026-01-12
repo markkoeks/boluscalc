@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bolus Calc</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bolus Calc</h1>
+        </header>
+
+        <section class="input-group">
+            <div class="field">
+                <label for="currentBg">Current BG (mmol/L)</label>
+                <input type="number" id="currentBg" step="0.1" inputmode="decimal" autofocus>
+            </div>
+            <div class="field">
+                <label for="carbs">Carbs (grams)</label>
+                <input type="number" id="carbs" step="1" inputmode="numeric">
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="settings-group">
+            <div class="field-half">
+                <label for="targetBg">Target BG</label>
+                <input type="number" id="targetBg" step="0.1" inputmode="decimal">
+            </div>
+            <div class="field-half">
+                <label for="isf">ISF (Drop per unit)</label>
+                <input type="number" id="isf" step="0.1" inputmode="decimal">
+            </div>
+            <div class="field-half">
+                <label for="carbRatio">Carb Ratio (g/u)</label>
+                <input type="number" id="carbRatio" step="0.1" inputmode="decimal">
+            </div>
+        </section>
+
+        <section class="results">
+            <div class="result-row">
+                <span>Carb Bolus:</span> <span id="outCarb">0.00</span>
+            </div>
+            <div class="result-row">
+                <span>Correction:</span> <span id="outCorr">0.00</span>
+            </div>
+            <div class="total-row">
+                <strong>Total Dose:</strong> <strong id="outTotal">0.00</strong>
+            </div>
+            <div class="rounded-row">
+                <span>Rounded (0.5):</span> <span id="outRounded">0.0</span>
+            </div>
+        </section>
+
+        <footer>
+            <p class="disclaimer">Calculation aid only. Not medical advice. Verify all doses.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</body>
+</html>
