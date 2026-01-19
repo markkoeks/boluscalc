@@ -18,6 +18,26 @@ body {
     overflow: hidden; /* Prevent scrolling */
 }
 
+/* Update the container to allow minimal vertical flexibility when keyboard is up */
+body {
+    overflow-y: auto; /* Changed from hidden to allow scroll-into-view */
+}
+
+.container {
+    min-height: 100vh;
+    padding-bottom: 40px; /* Space for the disclaimer at bottom */
+}
+
+/* Ensure the results stand out when scrolled into view */
+.results {
+    border: 2px solid transparent;
+    transition: border-color 0.5s ease;
+}
+
+.highlight-results {
+    border-color: #1abc9c;
+}
+
 .container {
     width: 100%;
     max-width: 400px;
