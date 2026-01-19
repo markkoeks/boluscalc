@@ -19,44 +19,33 @@ const outputs = {
 let carbTally = 0;
 let tallyHistory = [];
 
-// Evaluates "10+5*2" safely
-function evaluateMath(str) {
+// The "Magic" function that calculates math inside the input fields
+function solve(str) {
     if (!str) return 0;
     try {
-        // Sanitize: only allow numbers and math operators
-        const cleanStr = str.replace(/[^-()\d/*+.]/g, '');
-        return Function(`'use strict'; return (${cleanStr})`)() || 0;
-    } catch (e) {
-        return 0;
-    }
+        const clean = str.replace(/[^-()\d/*+.]/g, '');
+        return Function(`'use strict'; return (${clean})`)() || 0;
+    } catch (e) { return 0; }
 }
 
 function calculate() {
-    const bg = evaluateMath(elements.currentBg.value);
-    const carbs = evaluateMath(elements.carbs.value);
+    const bg = solve(elements.currentBg.value);
+    const carbs = solve(elements.carbs.value);
     const target = parseFloat(elements.targetBg.value) || 0;
-    const isf = parseFloat(elements.isf.value) || 1; 
+    const isf = parseFloat(elements.isf.value) || 1;
     const ratio = parseFloat(elements.carbRatio.value) || 1;
 
     const carbBolus = carbs / ratio;
     const correctionBolus = bg > target ? (bg - target) / isf : 0;
     const totalBolus = carbBolus + correctionBolus;
-    const roundedBolus = Math.round(totalBolus * 2) / 2;
 
     outputs.carb.textContent = carbBolus.toFixed(2);
     outputs.corr.textContent = correctionBolus.toFixed(2);
     outputs.total.textContent = totalBolus.toFixed(2);
-    outputs.rounded.textContent = roundedBolus.toFixed(1);
+    outputs.rounded.textContent = (Math.round(totalBolus * 2) / 2).toFixed(1);
 }
 
-function updateTally(amount) {
-    tallyHistory.push(carbTally);
-    carbTally = Math.max(0, carbTally + amount);
-    elements.tallyDisplay.textContent = carbTally;
-}
-
-// --- Event Listeners ---
-
+// --- Listeners ---
 window.addEventListener('load', () => {
     elements.targetBg.value = localStorage.getItem('targetBg') || 5.5;
     elements.isf.value = localStorage.getItem('isf') || 2.0;
@@ -72,13 +61,19 @@ document.body.addEventListener('input', (e) => {
 });
 
 document.querySelectorAll('.add-btn').forEach(btn => {
-    btn.addEventListener('click', () => updateTally(parseInt(btn.dataset.val)));
+    btn.addEventListener('click', () => {
+        tallyHistory.push(carbTally);
+        carbTally = Math.max(0, carbTally + parseInt(btn.dataset.val));
+        elements.tallyDisplay.textContent = carbTally;
+    });
 });
 
 document.getElementById('addCustomBtn').addEventListener('click', () => {
     const val = parseInt(elements.customCarb.value) || 0;
     if (val !== 0) {
-        updateTally(val);
+        tallyHistory.push(carbTally);
+        carbTally += val;
+        elements.tallyDisplay.textContent = carbTally;
         elements.customCarb.value = '';
     }
 });
@@ -100,21 +95,11 @@ document.getElementById('useTotalBtn').addEventListener('click', () => {
     elements.carbs.value = carbTally;
     calculate();
     elements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    elements.resultsSection.classList.add('highlight-results');
-    setTimeout(() => elements.resultsSection.classList.remove('highlight-results'), 1000);
 });
 
 document.getElementById('resetBtn').addEventListener('click', () => {
-    if (confirm('Clear all settings and inputs?')) {
+    if (confirm('Reset everything?')) {
         localStorage.clear();
-        elements.currentBg.value = '';
-        elements.carbs.value = '';
-        carbTally = 0;
-        tallyHistory = [];
-        elements.tallyDisplay.textContent = 0;
-        elements.targetBg.value = 5.5;
-        elements.isf.value = 2.0;
-        elements.carbRatio.value = 10;
-        calculate();
+        location.reload();
     }
 });
