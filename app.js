@@ -71,3 +71,66 @@ function calculate() {
     outputs.total.textContent = totalBolus.toFixed(2);
     outputs.rounded.textContent = roundedBolus.toFixed(1);
 }
+
+// ... existing element references ...
+
+// Carb Pad Logic
+let carbTally = 0;
+let tallyHistory = [];
+
+const tallyDisplay = document.getElementById('tallyDisplay');
+const customInput = document.getElementById('customCarb');
+
+function updateTally(amount) {
+    tallyHistory.push(carbTally);
+    carbTally = Math.max(0, carbTally + amount);
+    tallyDisplay.textContent = carbTally;
+}
+
+// Event Listeners for Quick Add
+document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => updateTally(parseInt(btn.dataset.val)));
+});
+
+document.getElementById('addCustomBtn').addEventListener('click', () => {
+    const val = parseInt(customInput.value) || 0;
+    if (val !== 0) {
+        updateTally(val);
+        customInput.value = '';
+    }
+});
+
+document.getElementById('undoCarb').addEventListener('click', () => {
+    if (tallyHistory.length > 0) {
+        carbTally = tallyHistory.pop();
+        tallyDisplay.textContent = carbTally;
+    }
+});
+
+document.getElementById('clearCarb').addEventListener('click', () => {
+    tallyHistory.push(carbTally);
+    carbTally = 0;
+    tallyDisplay.textContent = 0;
+});
+
+document.getElementById('useTotalBtn').addEventListener('click', () => {
+    elements.carbs.value = carbTally;
+    calculate(); // Trigger main calculation
+});
+
+// Update reset logic to also clear tally
+resetBtn.addEventListener('click', () => {
+    if (confirm('Clear all settings, tally, and inputs?')) {
+        localStorage.clear();
+        elements.currentBg.value = '';
+        elements.carbs.value = '';
+        carbTally = 0;
+        tallyHistory = [];
+        tallyDisplay.textContent = 0;
+        elements.targetBg.value = 5.5;
+        elements.isf.value = 2.0;
+        elements.carbRatio.value = 10;
+        calculate();
+        elements.currentBg.focus();
+    }
+});
