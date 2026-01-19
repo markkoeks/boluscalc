@@ -19,9 +19,21 @@ const outputs = {
 let carbTally = 0;
 let tallyHistory = [];
 
+// Evaluates "10+5*2" safely
+function evaluateMath(str) {
+    if (!str) return 0;
+    try {
+        // Sanitize: only allow numbers and math operators
+        const cleanStr = str.replace(/[^-()\d/*+.]/g, '');
+        return Function(`'use strict'; return (${cleanStr})`)() || 0;
+    } catch (e) {
+        return 0;
+    }
+}
+
 function calculate() {
-    const bg = parseFloat(elements.currentBg.value) || 0;
-    const carbs = parseFloat(elements.carbs.value) || 0;
+    const bg = evaluateMath(elements.currentBg.value);
+    const carbs = evaluateMath(elements.carbs.value);
     const target = parseFloat(elements.targetBg.value) || 0;
     const isf = parseFloat(elements.isf.value) || 1; 
     const ratio = parseFloat(elements.carbRatio.value) || 1;
@@ -68,7 +80,6 @@ document.getElementById('addCustomBtn').addEventListener('click', () => {
     if (val !== 0) {
         updateTally(val);
         elements.customCarb.value = '';
-        elements.customCarb.blur();
     }
 });
 
@@ -105,56 +116,5 @@ document.getElementById('resetBtn').addEventListener('click', () => {
         elements.isf.value = 2.0;
         elements.carbRatio.value = 10;
         calculate();
-        elements.currentBg.focus();
     }
 });
-
-const elements = {
-    currentBg: document.getElementById('currentBg'),
-    carbs: document.getElementById('carbs'),
-    targetBg: document.getElementById('targetBg'),
-    isf: document.getElementById('isf'),
-    carbRatio: document.getElementById('carbRatio'),
-    tallyDisplay: document.getElementById('tallyDisplay'),
-    customCarb: document.getElementById('customCarb'),
-    resultsSection: document.getElementById('resultsSection')
-};
-
-const outputs = {
-    carb: document.getElementById('outCarb'),
-    corr: document.getElementById('outCorr'),
-    total: document.getElementById('outTotal'),
-    rounded: document.getElementById('outRounded')
-};
-
-// Helper to evaluate "34+23" into 57
-function evaluateMath(str) {
-    try {
-        // Only allow numbers and math operators for safety
-        return Function(`'use strict'; return (${str.replace(/[^-()\d/*+.]/g, '')})`)() || 0;
-    } catch (e) {
-        return 0;
-    }
-}
-
-function calculate() {
-    // We use evaluateMath so "34+23" works in the Carbs field
-    const bg = evaluateMath(elements.currentBg.value);
-    const carbs = evaluateMath(elements.carbs.value);
-    const target = parseFloat(elements.targetBg.value) || 0;
-    const isf = parseFloat(elements.isf.value) || 1; 
-    const ratio = parseFloat(elements.carbRatio.value) || 1;
-
-    const carbBolus = carbs / ratio;
-    const correctionBolus = bg > target ? (bg - target) / isf : 0;
-    const totalBolus = carbBolus + correctionBolus;
-    const roundedBolus = Math.round(totalBolus * 2) / 2;
-
-    outputs.carb.textContent = carbBolus.toFixed(2);
-    outputs.corr.textContent = correctionBolus.toFixed(2);
-    outputs.total.textContent = totalBolus.toFixed(2);
-    outputs.rounded.textContent = roundedBolus.toFixed(1);
-}
-
-// All other listeners (Tally, Reset, Load) stay the same as the previous "Cleaned" version
-// Ensure you use type="text" in HTML for Carbs/BG to allow the "+" character
