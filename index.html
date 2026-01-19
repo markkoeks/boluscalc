@@ -42,6 +42,34 @@
             </div>
         </section>
 
+        <section class="carb-pad">
+    <div class="pad-header">
+        <span>Carb Tally: <strong id="tallyDisplay">0</strong>g</span>
+        <div class="pad-controls">
+            <button id="undoCarb" class="btn-sm">Undo</button>
+            <button id="clearCarb" class="btn-sm btn-warn">Clear</button>
+        </div>
+    </div>
+    
+    <div class="pad-grid">
+        <button type="button" class="add-btn" data-val="5">+5</button>
+        <button type="button" class="add-btn" data-val="10">+10</button>
+        <button type="button" class="add-btn" data-val="15">+15</button>
+        <button type="button" class="add-btn" data-val="20">+20</button>
+        <button type="button" class="add-btn" data-val="25">+25</button>
+        <button type="button" class="add-btn" data-val="30">+30</button>
+        <button type="button" class="add-btn sub" data-val="-5">-5</button>
+        <button type="button" class="add-btn sub" data-val="-10">-10</button>
+        
+        <div class="custom-add">
+            <input type="number" id="customCarb" placeholder="Custom" inputmode="numeric">
+            <button id="addCustomBtn">Add</button>
+        </div>
+    </div>
+    
+    <button id="useTotalBtn" class="use-total-btn">Use Tally in Calculation</button>
+</section>
+
         <section class="results">
             <div class="result-row">
                 <span>Carb Bolus:</span> <span id="outCarb">0.00</span>
