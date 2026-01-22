@@ -15,3 +15,13 @@ input:focus { border-color: var(--accent); background: white; outline: none; }
 .rounded-row { display: flex; justify-content: space-between; color: var(--accent); font-weight: 800; font-size: 1.4rem; margin-top: 4px; }
 .reset-button { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px; font-size: 0.8rem; text-decoration: underline; }
 .disclaimer { font-size: 0.6rem; text-align: center; color: #94a3b8; margin-top: 10px; }
+.iob-display { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+.history-card { background: white; }
+.history-item { 
+    display: flex; 
+    justify-content: space-between; 
+    padding: 8px 0; 
+    border-bottom: 1px solid #f1f5f9; 
+    font-size: 0.9rem;
+}
+.history-item:last-child { border: none; }
